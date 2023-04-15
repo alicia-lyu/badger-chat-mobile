@@ -23,8 +23,12 @@ export default function App() {
   const [chatrooms, setChatrooms] = useState([]);
 
   useEffect(() => {
-    // hmm... maybe I should load the chatroom names here
-    setChatrooms(["Hello", "World"]) // for example purposes only!
+    fetch("https://cs571.org/s23/hw10/api/chatroom", {
+      headers: {
+        "X-CS571-ID": "bid_30e5ed25e99b26f8f91c",
+      }
+    }).then(res => res.json())
+    .then(data => setChatrooms(data));
   }, []);
 
   function handleLogin(username, password) {
