@@ -1,24 +1,41 @@
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Alert, Button, Text, TextInput, View } from "react-native";
+import authStyles from "../styles/authStyles";
 
 function BadgerLoginScreen(props) {
-    return <View style={styles.container}>
-        <Text style={{ fontSize: 36 }}>BadgerChat Login</Text>
-        <Text>Hmmm... I should add inputs here!</Text>
-        <Button color="crimson" title="Login" onPress={() => {
-            Alert.alert("Hmmm...", "I should check the user's credentials first!");
-            props.handleLogin("myusername", "mypassword")
-        }} />
-        <Button color="grey" title="Signup" onPress={() => props.setIsRegistering(true)} />
+    const [username, onChangeUsername] = useState("username");
+    const [password, onChangePassword] = useState("password");
+
+
+    const handleLogin = () => {
+        Alert.alert("Hmmm...", "I should check the user's credentials first!");
+        props.handleLogin("myusername", "mypassword")
+    }
+
+    return <View style={authStyles.container}>
+        <View style={authStyles.header}>
+            <Text style={{fontSize:36}}>BadgerChat Login</Text>
+        </View>
+        <View style={authStyles.body}>
+            <View style={authStyles.inputContainer}>
+                <Text style={authStyles.inputPrompt}>Username</Text>
+                <View style={authStyles.inputBox}>
+                    <TextInput onChangeText={onChangeUsername} value={username} style={authStyles.inputBoxText} />
+                </View>
+            </View>
+            <View style={authStyles.inputContainer}>
+                <Text style={authStyles.inputPrompt}>Password</Text>
+                <View style={authStyles.inputBox}>
+                    <TextInput onChangeText={onChangePassword} value={password} style={authStyles.inputBoxText} />
+                </View>
+            </View>
+            <Button title="Login" onPress={handleLogin} />
+        </View>
+        <View style={authStyles.footer}>
+            <Text>New here?</Text>
+            <Button title="Signup" onPress={() => props.setIsRegistering(true)} />
+        </View>
     </View>;
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }
-});
 
 export default BadgerLoginScreen;
