@@ -12,6 +12,7 @@ import BadgerLandingScreen from './components/BadgerLandingScreen';
 import BadgerChatroomScreen from './components/BadgerChatroomScreen';
 import BadgerRegisterScreen from './components/BadgerRegisterScreen';
 import { Alert } from 'react-native';
+import BadgerLogoutScreen from './components/BadgerLogoutScreen';
 
 
 const ChatDrawer = createDrawerNavigator();
@@ -30,6 +31,8 @@ export default function App() {
     }).then(res => res.json())
     .then(data => setChatrooms(data));
   }, []);
+
+  const toggleLogIn = () => setIsLoggedIn(!isLoggedIn);
 
   function handleLogin(username, password) {
     fetch("https://cs571.org/s23/hw10/api/login", {
@@ -103,6 +106,12 @@ export default function App() {
               </ChatDrawer.Screen>
             })
           }
+          <ChatDrawer.Screen name="Log Out" options={{
+            drawerLabelStyle: {color: "darkred"},
+            drawerActiveBackgroundColor: "rgba(139 0 0 / 0.15)",
+            }}>
+            {(props) => <BadgerLogoutScreen toggleLogIn={toggleLogIn}/>}
+          </ChatDrawer.Screen>
         </ChatDrawer.Navigator>
       </NavigationContainer>
     );
