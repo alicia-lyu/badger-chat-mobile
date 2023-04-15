@@ -3,6 +3,7 @@ import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import BadgerChatMessage from "./BadgerChatMessage";
 import BadgerPostModal from "./BadgerPostModal";
 import fetchMessages from "../utils/fetchMessages";
+import rowStyles from "../styles/rowStyles";
 
 function BadgerChatroomScreen(props) {
     const [messages, setMessages] = useState([]);
@@ -39,21 +40,18 @@ function BadgerChatroomScreen(props) {
                 />)
             }
         </ScrollView>
-        <View style={styles.rowContainer}>
+        <View style={rowStyles.rowContainer}>
             <Button title="ADD POST" onPress={toggleModal} />
             <Button title="REFRESH" onPress={handleRefresh} />
         </View>
-        <BadgerPostModal toggle={toggleModal} visible={isModalVisible} chatroom={props.name} refresh={handleRefresh}/>
+        <BadgerPostModal 
+            toggle={toggleModal} 
+            visible={isModalVisible} 
+            chatroom={props.name} 
+            refresh={handleRefresh}
+            guestAccess={props.guestAccess}
+            />
     </View>
 }
-
-const styles = StyleSheet.create({
-    rowContainer: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "center"
-    }
-});
 
 export default BadgerChatroomScreen;

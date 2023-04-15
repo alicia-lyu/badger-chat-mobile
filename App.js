@@ -13,6 +13,7 @@ import BadgerChatroomScreen from './components/BadgerChatroomScreen';
 import BadgerRegisterScreen from './components/BadgerRegisterScreen';
 import { Alert } from 'react-native';
 import BadgerLogoutScreen from './components/BadgerLogoutScreen';
+import BadgerConversionScreen from './components/BadgerConversionScreen';
 
 
 const ChatDrawer = createDrawerNavigator();
@@ -21,6 +22,7 @@ export default function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
   const [chatrooms, setChatrooms] = useState([]);
 
   useEffect(() => {
@@ -29,10 +31,20 @@ export default function App() {
         "X-CS571-ID": "bid_30e5ed25e99b26f8f91c",
       }
     }).then(res => res.json())
-    .then(data => setChatrooms(data));
+      .then(data => setChatrooms(data));
   }, []);
 
   const toggleLogIn = () => setIsLoggedIn(!isLoggedIn);
+
+  function grantGuestAccess() {
+    setIsGuest(true);
+  };
+
+  function handleConvert() {
+    setIsGuest(false);
+    setIsRegistering(true);
+  }
+
 
   function handleLogin(username, password) {
     fetch("https://cs571.org/s23/hw10/api/login", {
@@ -54,14 +66,14 @@ export default function App() {
         return {};
       }
     }).then(data => {
-    //   {
-    //     "msg": "Successfully authenticated.",
-    //     "user": {
-    //         "id": 4,
-    //         "username": "test12456",
-    //     },
-    //     "token": "eyJhbGciOiJIUzI1NiIs..."
-    // }
+      //   {
+      //     "msg": "Successfully authenticated.",
+      //     "user": {
+      //         "id": 4,
+      //         "username": "test12456",
+      //     },
+      //     "token": "eyJhbGciOiJIUzI1NiIs..."
+      // }
       if (data.token) {
         SecureStore.setItemAsync("jwt", data.token);
       }
@@ -94,7 +106,7 @@ export default function App() {
     })
   }
 
-  if (isLoggedIn) {
+  if (isLoggedIn || isGuest) {
     return (
       <NavigationContainer>
         <ChatDrawer.Navigator>
@@ -102,23 +114,33 @@ export default function App() {
           {
             chatrooms.map(chatroom => {
               return <ChatDrawer.Screen key={chatroom} name={chatroom}>
-                {(props) => <BadgerChatroomScreen name={chatroom} />}
+                {(props) => <BadgerChatroomScreen name={chatroom} guestAccess={isGuest}/>}
               </ChatDrawer.Screen>
             })
           }
-          <ChatDrawer.Screen name="Log Out" options={{
-            drawerLabelStyle: {color: "darkred"},
-            drawerActiveBackgroundColor: "rgba(139 0 0 / 0.15)",
-            }}>
-            {(props) => <BadgerLogoutScreen toggleLogIn={toggleLogIn}/>}
-          </ChatDrawer.Screen>
+          {
+            isLoggedIn ?
+              <ChatDrawer.Screen name="Log Out" options={{
+                drawerLabelStyle: { color: "darkred" },
+                drawerActiveBackgroundColor: "rgba(139 0 0 / 0.15)",
+              }}>
+                {(props) => <BadgerLogoutScreen toggleLogIn={toggleLogIn} />}
+              </ChatDrawer.Screen>
+              :
+              <ChatDrawer.Screen name="Sign Up" options={{
+                drawerLabelStyle: { color: "#af52de" },
+                drawerActiveBackgroundColor: "rgba(175 82 222 / 0.15)",
+              }}>
+                {(props) => <BadgerConversionScreen convert={handleConvert}/>}
+              </ChatDrawer.Screen>
+          }
         </ChatDrawer.Navigator>
       </NavigationContainer>
     );
   } else if (isRegistering) {
     return <BadgerRegisterScreen handleSignup={handleSignup} setIsRegistering={setIsRegistering} />
   } else {
-    return <BadgerLoginScreen handleLogin={handleLogin} setIsRegistering={setIsRegistering} />
+    return <BadgerLoginScreen handleLogin={handleLogin} grantGuestAccess={grantGuestAccess} setIsRegistering={setIsRegistering} />
   }
 }
 
