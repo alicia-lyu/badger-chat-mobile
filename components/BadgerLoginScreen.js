@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { Alert, Button, Text, TextInput, View } from "react-native";
+import { Button, Text, TextInput, View } from "react-native";
 import authStyles from "../styles/authStyles";
 
 function BadgerLoginScreen(props) {
-    const [username, onChangeUsername] = useState("username");
-    const [password, onChangePassword] = useState("password");
+    const [username, onChangeUsername] = useState("");
+    const [password, onChangePassword] = useState("");
 
 
     const handleLogin = () => {
-        Alert.alert("Hmmm...", "I should check the user's credentials first!");
-        props.handleLogin("myusername", "mypassword")
+        props.handleLogin(username, password);
     }
 
     return <View style={authStyles.container}>
@@ -20,13 +19,26 @@ function BadgerLoginScreen(props) {
             <View style={authStyles.inputContainer}>
                 <Text style={authStyles.inputPrompt}>Username</Text>
                 <View style={authStyles.inputBox}>
-                    <TextInput onChangeText={onChangeUsername} value={username} style={authStyles.inputBoxText} />
+                    <TextInput 
+                    onChangeText={onChangeUsername} 
+                    value={username} 
+                    style={authStyles.inputBoxText}
+                    placeholder="username"
+                    autoCorrect={false}
+                    autoCapitalize='none'
+                    />
                 </View>
             </View>
             <View style={authStyles.inputContainer}>
                 <Text style={authStyles.inputPrompt}>Password</Text>
                 <View style={authStyles.inputBox}>
-                    <TextInput onChangeText={onChangePassword} value={password} style={authStyles.inputBoxText} />
+                    <TextInput 
+                    onChangeText={onChangePassword} 
+                    value={password} 
+                    style={authStyles.inputBoxText} 
+                    secureTextEntry={true} 
+                    placeholder="password"
+                    />
                 </View>
             </View>
             <Button title="Login" onPress={handleLogin} />
