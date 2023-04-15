@@ -1,20 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button, ScrollView, StyleSheet, Text, View } from "react-native";
 import BadgerChatMessage from "./BadgerChatMessage";
-
-const fetchMessages = async (name) => {
-    console.log(name);
-    const res = await fetch(`https://cs571.org/s23/hw10/api/chatroom/${name}/messages`, {
-        headers: {
-            "X-CS571-ID": "bid_30e5ed25e99b26f8f91c",
-        }
-    })
-    const data = await res.json();
-    return data.messages
-}
+import BadgerPostModal from "./BadgerPostModal";
+import fetchMessages from "../utils/fetchMessages";
 
 function BadgerChatroomScreen(props) {
     const [messages, setMessages] = useState([]);
+    const [isModalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         fetchMessages(props.name).then(messages => {
@@ -23,9 +15,10 @@ function BadgerChatroomScreen(props) {
         })
     }, [])
 
-    const handleAddPostModal = () => {
-        
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
     }
+
     const handleRefresh = () => {
         setMessages([]);
         fetchMessages(props.name).then(messages => {
@@ -47,9 +40,10 @@ function BadgerChatroomScreen(props) {
             }
         </ScrollView>
         <View style={styles.rowContainer}>
-            <Button title="ADD POST" onPress={handleAddPostModal} />
+            <Button title="ADD POST" onPress={toggleModal} />
             <Button title="REFRESH" onPress={handleRefresh} />
         </View>
+        <BadgerPostModal toggle={toggleModal} visible={isModalVisible} chatroom={props.name} refresh={handleRefresh}/>
     </View>
 }
 
