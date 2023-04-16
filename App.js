@@ -94,6 +94,7 @@ export default function App() {
     }).then(res => {
       if (res.status == 200) {
         setIsLoggedIn(true);
+        setIsRegistering(false);
         return res.json();
       } else if (res.status == 409) {
         Alert.alert("User name taken", "This user name already exists")
